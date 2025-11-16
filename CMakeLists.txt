@@ -9,7 +9,7 @@ file(GLOB SOURCES "src/*.c")
 
 # Static library - default prefix "lib", so output will be lib${PROJECT_NAME}.a
 add_library(${PROJECT_NAME}_static STATIC ${SOURCES})
-target_compile_definitions(${PROJECT_NAME} PRIVATE USE_OPEMSG)
+target_compile_definitions(${PROJECT_NAME}_static PRIVATE USE_OPEMSG)
 set_target_properties(${PROJECT_NAME}_static PROPERTIES
     OUTPUT_NAME "${PROJECT_NAME}"
     POSITION_INDEPENDENT_CODE ON
@@ -18,7 +18,7 @@ set_target_properties(${PROJECT_NAME}_static PROPERTIES
 # Shared library - let CMake add prefix "lib" and suffix ".so"
 # Versioning properly set to avoid extra suffixes
 add_library(${PROJECT_NAME}_shared SHARED ${SOURCES})
-target_compile_definitions(${PROJECT_NAME} PRIVATE USE_OPEMSG)
+target_compile_definitions(${PROJECT_NAME}_shared PRIVATE USE_OPEMSG)
 set_target_properties(${PROJECT_NAME}_shared PROPERTIES
     OUTPUT_NAME "${PROJECT_NAME}"
     VERSION 1.0.0
@@ -34,7 +34,7 @@ install(TARGETS ${PROJECT_NAME}_static ${PROJECT_NAME}_shared
 
 # install headers
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
-        DESTINATION include/${PROJECT_NAME}
+        DESTINATION include
         FILES_MATCHING PATTERN "*.h"
 )
 
