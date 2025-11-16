@@ -22,4 +22,11 @@
 }
 
 
+#define EHANDLER_GOTO(_Msg, _ExitVal, _GotoLabel) do {	\
+	EMSG(_Msg);											\
+	e = (_ExitVal);										\
+	goto _GotoLabel;									\
+} while(0);
+
+
 #endif // !__LIBEHANDLER_H__
