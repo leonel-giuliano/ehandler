@@ -7,7 +7,7 @@
 #include <string.h>
 
 
-static struct _opemsg _opemsg = { 0 };
+struct _opemsg _opemsg = { 0 };
 
 
 void __set_opemsg(size_t line, const char *file, const char *msg) {
