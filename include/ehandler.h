@@ -66,14 +66,14 @@ void __set_opemsg(size_t line, const char *file, const char *msg);
 #define EHANDLER(_Msg, _ExitVal) do {	\
 	EMSG(_Msg);							\
 	exit(_ExitVal);						\
-}
+} while(0)
 
 
 #define EHANDLER_GOTO(_Msg, _ExitVal, _GotoLabel) do {	\
 	EMSG(_Msg);											\
 	e = (_ExitVal);										\
 	goto _GotoLabel;									\
-} while(0);
+} while(0)
 
 
 #endif // !__LIBEHANDLER_H__
