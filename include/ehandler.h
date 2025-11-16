@@ -2,6 +2,7 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
@@ -13,6 +14,12 @@
 		fprintf(stderr, " | %s [ERRNO::%d]", strerror(__errno_val), __errno_val);	\
 	putc('\n', stderr);																\
 } while(0)
+
+
+#define EHANDLER(_Msg, _ExitVal) do {	\
+	EMSG(_Msg);							\
+	exit(_ExitVal);						\
+}
 
 
 #endif // !__LIBEHANDLER_H__
