@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 
 #include "ehandler.h"
@@ -20,4 +21,11 @@ size_t __get_ehandler_line(void) {
 
 char *__get_ehandler_file(void) {
 	return (_opemsg.line) ? _opemsg.file : NULL;
+}
+
+
+void __print_emsg(void) {
+	if(_opemsg.line == 0) return;
+
+	fprintf(stderr, " - %s", _opemsg.msg);
 }
