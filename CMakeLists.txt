@@ -21,8 +21,8 @@ add_library(${PROJECT_NAME}_shared SHARED ${SOURCES})
 target_compile_definitions(${PROJECT_NAME}_shared PRIVATE USE_OPEMSG)
 set_target_properties(${PROJECT_NAME}_shared PROPERTIES
     OUTPUT_NAME "${PROJECT_NAME}"
-    VERSION 1.0.0
-    SOVERSION 1
+    VERSION 2.0.0
+    SOVERSION 2
     POSITION_INDEPENDENT_CODE ON
 )
 
@@ -43,10 +43,10 @@ add_custom_command(TARGET ${PROJECT_NAME}_shared POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
         ${CMAKE_COMMAND} -E remove -f lib${PROJECT_NAME}.so
     COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-        ${CMAKE_COMMAND} -E remove -f lib${PROJECT_NAME}.so.1
+        ${CMAKE_COMMAND} -E remove -f lib${PROJECT_NAME}.so.2
     COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-        ${CMAKE_COMMAND} -E create_symlink lib${PROJECT_NAME}.so.1.0.0 lib${PROJECT_NAME}.so.1
+        ${CMAKE_COMMAND} -E create_symlink lib${PROJECT_NAME}.so.2.0.0 lib${PROJECT_NAME}.so.2
     COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-        ${CMAKE_COMMAND} -E create_symlink lib${PROJECT_NAME}.so.1 lib${PROJECT_NAME}.so
+        ${CMAKE_COMMAND} -E create_symlink lib${PROJECT_NAME}.so.2 lib${PROJECT_NAME}.so
     COMMENT "Fixing symbolic links for shared library"
 )
