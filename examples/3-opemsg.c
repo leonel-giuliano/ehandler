@@ -1,6 +1,3 @@
-#define USE_OPEMSG
-
-
 #include <stdio.h>
 
 #include "ehandler.h"
@@ -11,12 +8,12 @@ int print_input(void) {
 
 	scanf("%d", &var);
 	if(var < 0) {
-		set_opemsg("Input should be greater than 0");
+		SET_OPEMSG("Input should be greater than 0");
 		return -1;
 	}
 
 	if(var > 10) {
-		set_opemsg("Input should be less than 10");
+		SET_OPEMSG("Input should be less than 10");
 		return -1;
 	}
 
