@@ -29,6 +29,9 @@ struct _opemsg {
 };
 
 
+#define SET_OPEMSG(_Msg) set_opemsg_impl(__LINE__, __FILE__, _Msg)
+
+
 #define EHANDLER(_Msg, _ExitVal) do {	\
 	emsg(__LINE__, __FILE__, _Msg);		\
 	exit(_ExitVal);						\
@@ -42,9 +45,15 @@ struct _opemsg {
 } while(0)
 
 
-size_t __get_ehandler_line(void) 	__attribute__((weak));
-char *__get_ehandler_file(void) 	__attribute__((weak));
-void __print_emsg(void)				__attribute__((weak));
+void __set_opemsg(size_t, const char *, const char *) 	__attribute__((weak));
+size_t __get_ehandler_line(void) 						__attribute__((weak));
+char *__get_ehandler_file(void) 						__attribute__((weak));
+void __print_emsg(void)									__attribute__((weak));
+
+
+static inline void set_opemsg_impl(size_t line, const char *file, const char *msg) {
+	if(__set_opemsg != NULL) __set_opemsg(line, file, msg);
+}
 
 
 static inline size_t get_ehandler_line(void) {
