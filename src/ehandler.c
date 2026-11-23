@@ -3,10 +3,9 @@
 #include <string.h>
 #include <errno.h>
 
+#include "ehandler.h"
 #include "ename.h"
 
-
-#define MSG_SIZE 64
 
 // Returns the size of the message starting from the seek
 #define SK_MSGSIZ(sk, msg) (sizeof(msg) - ((sk) - (msg)))
@@ -23,14 +22,14 @@
  *
  * The message is truncated if 'MSG_SIZE' is overflowed
  */
-static void print_msg(const char *name, int line, int err, 
+static void print_msg(const char *name, size_t line, int err, 
                     const char *fmt, va_list ap) {
-    char  msg[MSG_SIZE];
+    char  msg[EH_MSGSIZE];
     char *sk_msg;
 
     sk_msg = msg;
     if(name != NULL) {
-        sk_msg += snprintf(msg, sizeof(msg), "(%s:%d): ", name, line);
+        sk_msg += snprintf(msg, sizeof(msg), "(%s:%zu): ", name, line);
         SK_MSGBOUND(sk_msg, msg);
     }
 
@@ -47,5 +46,17 @@ static void print_msg(const char *name, int line, int err,
     SK_MSGBOUND(sk_msg, msg);
 
     vsnprintf(sk_msg, SK_MSGSIZ(sk_msg, msg), fmt, ap);
-    fprintf(stderr, "%s", msg);
+    fprintf(stderr, "\n%s\n", msg);
+}
+
+
+void _err_msg(const char *name, size_t line, const char *fmt, ...) {
+    int     err;
+    va_list ap;
+
+    err = errno;
+    va_start(ap, fmt);
+
+    print_msg(name, line, err, fmt, ap);
+    va_end(ap);
 }

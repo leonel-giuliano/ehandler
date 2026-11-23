@@ -1,3 +1,7 @@
+#ifndef __LIBEH_ENAME_H__
+#define __LIBEH_ENAME_H__
+
+
 static char *ename[] = {
 	/* 0 */ "",
 	/* 1 */ "EPERM", "ENOENT", "ESRCH", "EINTR", "EIO", "ENXIO", "E2BIG",
@@ -29,3 +33,6 @@ static char *ename[] = {
 };
 
 #define MAX_ENAME 132
+
+
+#endif
