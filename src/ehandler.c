@@ -7,13 +7,34 @@
 #include "ename.h"
 
 
-// Returns the size of the message starting from the seek
-#define SK_MSGSIZ(sk, msg) (sizeof(msg) - ((sk) - (msg)))
+/*
+ * Appends the message, making sure that 'sk' doesn't go beyond 'end'
+ * 'p_sk' is updated to point to the end of the message
+ */
+static void vappend_msg(char **p_sk, char *end, const char *fmt, va_list ap) {
+    size_t  size, n_wrt;
 
-// Updates 'sk' so if it was out of bounds, it points to the '\0'
-#define SK_MSGBOUND(sk, msg) do {                                   \
-    if((sk) - (msg) >= sizeof(msg)) (sk) = (msg) + sizeof(msg) - 1; \
-} while(0);
+    if(*p_sk >= end) return;
+
+    size    = end - *p_sk;
+    n_wrt   = vsnprintf(*p_sk, size, fmt, ap);
+
+    if(n_wrt < size)    *p_sk += n_wrt;
+    else                *p_sk  = end;
+}
+
+
+/*
+ * Appends the message, making sure that 'sk' doesn't go beyond nor up to 'end'
+ * 'p_sk' is updated to point to the end of the message
+ */
+static void append_msg(char **p_sk, char *end, const char *fmt, ...) {
+    va_list ap;
+
+    va_start(ap, fmt);
+    vappend_msg(p_sk, end, fmt, ap);
+    va_end(ap);
+}
 
 
 /*
@@ -25,27 +46,18 @@
 static void print_msg(const char *name, size_t line, int err, 
                     const char *fmt, va_list ap) {
     char  msg[EH_MSGSIZE];
-    char *sk_msg;
+    char *sk, *end;
 
-    sk_msg = msg;
-    if(name != NULL) {
-        sk_msg += snprintf(msg, sizeof(msg), "(%s:%zu): ", name, line);
-        SK_MSGBOUND(sk_msg, msg);
-    }
+    sk  = msg;
+    end = msg + sizeof(msg);
 
-    sk_msg += strlcpy(sk_msg, "ERROR", SK_MSGSIZ(sk_msg, msg));
-    SK_MSGBOUND(sk_msg, msg);
+    if(name != NULL) append_msg(&sk, end, "(%s:%zu): ", name, line);
 
-    if(err) {
-        sk_msg += snprintf(sk_msg, SK_MSGSIZ(sk_msg, msg), 
-                            " [%s:%d]", ename[err], err);
-        SK_MSGBOUND(sk_msg, msg);
-    }
+    append_msg(&sk, end, "ERROR");
+    if(err) append_msg(&sk, end, " [%s:%d]", ename[err], err);
 
-    sk_msg += strlcpy(sk_msg, ": ", SK_MSGSIZ(sk_msg, msg));
-    SK_MSGBOUND(sk_msg, msg);
-
-    vsnprintf(sk_msg, SK_MSGSIZ(sk_msg, msg), fmt, ap);
+    append_msg(&sk, end, ": ");
+    vappend_msg(&sk, end, fmt, ap);
     fprintf(stderr, "\n%s\n", msg);
 }
 
@@ -55,8 +67,8 @@ void _err_msg(const char *name, size_t line, const char *fmt, ...) {
     va_list ap;
 
     err = errno;
-    va_start(ap, fmt);
 
+    va_start(ap, fmt);
     print_msg(name, line, err, fmt, ap);
     va_end(ap);
 }
