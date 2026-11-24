@@ -1,11 +1,16 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
 #include "ehandler.h"
 #include "ename.h"
+
+
+static void terminate(bool use_abort, bool exit_now) NORETURN;
 
 
 /*
@@ -66,6 +71,18 @@ static void print_msg(const char *name, size_t line, int err, bool flush,
 }
 
 
+/*
+ * Terimates the program either with 'abort', 
+ * or with '_exit' if 'exit_now' is true or 'exit'
+ */
+static void terminate(bool use_abort, bool exit_now) {
+    if(use_abort) abort();
+
+    if(exit_now) _exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);
+}
+
+
 void _err_msg(const char *name, size_t line, const char *fmt, ...) {
     int     err;
     va_list ap;
@@ -75,4 +92,19 @@ void _err_msg(const char *name, size_t line, const char *fmt, ...) {
     va_start(ap, fmt);
     print_msg(name, line, err, true, fmt, ap);
     va_end(ap);
+}
+
+
+void _err_exit(const char *name, size_t line, bool use_abort, 
+                const char *fmt, ...) {
+    int     err;
+    va_list ap;
+
+    err = errno;
+
+    va_start(ap, fmt);
+    print_msg(name, line, err, true, fmt, ap);
+    va_end(ap);
+
+    terminate(use_abort, false);
 }
