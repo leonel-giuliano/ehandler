@@ -135,3 +135,15 @@ void _err_exit_en(const char *name, size_t line, bool use_abort,
 
     terminate(use_abort, false);
 }
+
+
+void _fatal(const char *name, size_t line, bool use_abort, 
+            const char *fmt, ...) {
+    va_list ap;
+
+    va_start(ap, fmt);
+    print_msg(name, line, 0, true, fmt, ap);
+    va_end(ap);
+
+    terminate(use_abort, false);
+}
