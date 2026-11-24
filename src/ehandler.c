@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <string.h>
 #include <errno.h>
 
@@ -43,7 +44,7 @@ static void append_msg(char **p_sk, char *end, const char *fmt, ...) {
  *
  * The message is truncated if 'MSG_SIZE' is overflowed
  */
-static void print_msg(const char *name, size_t line, int err, 
+static void print_msg(const char *name, size_t line, int err, bool flush,
                     const char *fmt, va_list ap) {
     char  msg[EH_MSGSIZE];
     char *sk, *end;
@@ -58,7 +59,10 @@ static void print_msg(const char *name, size_t line, int err,
 
     append_msg(&sk, end, ": ");
     vappend_msg(&sk, end, fmt, ap);
+
+    if(flush) fflush(stdout);
     fprintf(stderr, "\n%s\n", msg);
+    fflush(stderr);
 }
 
 
@@ -69,6 +73,6 @@ void _err_msg(const char *name, size_t line, const char *fmt, ...) {
     err = errno;
 
     va_start(ap, fmt);
-    print_msg(name, line, err, fmt, ap);
+    print_msg(name, line, err, true, fmt, ap);
     va_end(ap);
 }
