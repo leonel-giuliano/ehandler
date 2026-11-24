@@ -4,6 +4,7 @@
 ### Personal ###
 .clangd
 build
+vgcore*
 
 ### C ###
 # Prerequisites

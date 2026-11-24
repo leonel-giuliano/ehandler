@@ -11,7 +11,9 @@
 
 
 void check(const char *name, size_t line, const char *res, size_t res_line);
+
 void test_msg(void);
+void test_exit(void);
 
 
 extern int pfd[2];
