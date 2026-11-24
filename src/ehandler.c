@@ -110,6 +110,21 @@ void _err_exit(const char *name, size_t line, bool use_abort,
 }
 
 
+void _err_exit_now(const char *name, size_t line, bool use_abort, 
+                    const char *fmt, ...) {
+    int     err;
+    va_list ap;
+
+    err = errno;
+
+    va_start(ap, fmt);
+    print_msg(name, line, err, false, fmt, ap);
+    va_end(ap);
+
+    terminate(use_abort, true);
+}
+
+
 void _err_exit_en(const char *name, size_t line, bool use_abort, 
                     int err, const char *fmt, ...) {
     va_list ap;
