@@ -1,7 +1,7 @@
-CC 				= gcc
-AR 				= ar
-CFLAGS 			= -Wall -Wextra -Werror -pedantic -MMD -MP -I $(INCLUDE_DIR)
-SHARED_FLAGS	= -Wl,-soname,$(LIB_VERSION)
+CC 			= gcc
+AR 			= ar
+CFLAGS 		= -Wall -Wextra -Werror -Wpedantic -I $(INCLUDE_DIR)
+SO_FLAGS 	= -Wl,-soname,$(LIB_SONAME)
 
 
 SRC_DIR 	= src
@@ -10,8 +10,8 @@ INCLUDE_DIR = include
 BUILD_DIR 	= build
 
 INSTALL_DIR 	= /usr/local
-INSTALL_LIBDIR 	= $(INSTALL_DIR)/lib
 INSTALL_INCDIR 	= $(INSTALL_DIR)/include
+INSTALL_LIBDIR 	= $(INSTALL_DIR)/lib
 
 
 SRCS 		= $(wildcard $(SRC_DIR)/*.c)
@@ -23,30 +23,32 @@ DEPS 		= $(OBJS:.o=.d) $(TEST_OBJS:.o=.d)
 
 LIB_NAME 			= libeh
 LIB_MAJOR_VERSION 	= 1
-LIB_MINOR_VERSION 	= 0
-LIB_PATCH_VERSION 	= 0
-LIB_VERSION 		= $(LIB_NAME).so.$(LIB_MAJOR_VERSION)
-LIB_FULL_VERSION 	= $(LIB_VERSION).$(LIB_MINOR_VERSION).$(LIB_PATCH_VERSION)
+LIB_MINOR_VERSION	= 0
+LIB_PATCH_VERSION	= 0
+LIB_SONAME 			= $(LIB_NAME).so.$(LIB_MAJOR_VERSION)
+LIB_FULL 			= $(LIB_SONAME).$(LIB_MINOR_VERSION).$(LIB_PATCH_VERSION)
 
 
 all: lib
 
 
--include $(DEPS)
+-include $(DEPS) 
 
 
-install: all
-	install -d $(INSTALL_LIBDIR) $(INSTALL_INCDIR)
-	install -m 644 $(BUILD_DIR)/$(LIB_FULL_VERSION) $(INSTALL_LIBDIR)
-	ln -sf $(LIB_FULL_VERSION) $(INSTALL_LIBDIR)/$(LIB_VERSION)
-	ln -sf $(LIB_VERSION) $(INSTALL_LIBDIR)/$(LIB_NAME).so
-	install -m 644 $(BUILD_DIR)/$(LIB_NAME).a $(INSTALL_LIBDIR)
-	install -m 644 $(INCLUDE_DIR)/ehandler.h $(INSTALL_INCDIR)
+install: lib
+	install -d $(INSTALL_INCDIR) $(INSTALL_LIBDIR)
+	install -m 644 $(INCLUDE_DIR)/ehandler.h 	$(INSTALL_INCDIR)
+	install -m 644 $(BUILD_DIR)/$(LIB_NAME).a	$(INSTALL_LIBDIR)
+	install -m 644 $(BUILD_DIR)/$(LIB_FULL) 	$(INSTALL_LIBDIR)
+	ln -sf $(LIB_SONAME) 	$(INSTALL_LIBDIR)/$(LIB_FULL)
+	ln -sf $(LIB_NAME).so 	$(INSTALL_LIBDIR)/$(LIB_SONAME)
 
 
+lib: CFLAGS += -O3
 lib: $(OBJS) | $(BUILD_DIR)
 	$(AR) cr $(BUILD_DIR)/$(LIB_NAME).a $^
-	$(CC) -o $(BUILD_DIR)/$(LIB_FULL_VERSION) $^ -shared $(SHARED_FLAGS)
+	$(CC) -o $(BUILD_DIR)/$(LIB_FULL) $^ -shared $(SO_FLAGS)
+	
 
 
 test: CFLAGS += -g -O0 -DLIBEH_DEBUG
@@ -66,8 +68,8 @@ $(BUILD_DIR):
 
 clean:
 	rm -rf $(BUILD_DIR)
-	rm -rf $(INSTALL_LIBDIR)/$(LIB_FULL_VERSION)
-	rm -rf $(INSTALL_LIBDIR)/$(LIB_VERSION)
-	rm -rf $(INSTALL_LIBDIR)/$(LIB_NAME).so
-	rm -rf $(INSTALL_LIBDIR)/$(LIB_NAME).a
 	rm -rf $(INSTALL_INCDIR)/ehandler.h
+	rm -rf $(INSTALL_LIBDIR)/$(LIB_NAME).a
+	rm -rf $(INSTALL_LIBDIR)/$(LIB_NAME).so
+	rm -rf $(INSTALL_LIBDIR)/$(LIB_SONAME)
+	rm -rf $(INSTALL_LIBDIR)/$(LIB_FULL)
