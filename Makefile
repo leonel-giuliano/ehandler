@@ -1,13 +1,15 @@
-CC 			= gcc
-AR 			= ar
-CFLAGS 		= -Wall -Wextra -Werror -Wpedantic -I $(INCLUDE_DIR)
-SO_FLAGS 	= -Wl,-soname,$(LIB_SONAME)
+CC 				= gcc
+AR 				= ar
+CFLAGS 			= -Wall -Wextra -Werror -Wpedantic $(INCLUDE_FLAGS)
+INCLUDE_FLAGS 	= $(addprefix -I,$(INCLUDE_DIRS))
+SO_FLAGS 		= -Wl,-soname,$(LIB_SONAME)
 
 
-SRC_DIR 	= src
-TEST_DIR 	= test
-INCLUDE_DIR = include
-BUILD_DIR 	= build
+SRC_DIR 		= src
+TEST_DIR 		= test
+INCLUDE_DIR 	= include
+BUILD_DIR 		= build
+INCLUDE_DIRS 	= $(INCLUDE_DIR) $(SRC_DIR) $(TEST_DIR)
 
 INSTALL_DIR 	= /usr/local
 INSTALL_INCDIR 	= $(INSTALL_DIR)/include
