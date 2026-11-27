@@ -19,6 +19,7 @@ make install
 And to uninstall:
 ```bash
 make clean
+make uninstall
 ```
 
 
