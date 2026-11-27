@@ -39,6 +39,8 @@ is needed, then `LIBEH_DEBUG` needs to be declared before including the header f
 ```c
 #define LIBEH_DEBUG
 #include "ehandler.h"
+
+err_msg("there was a problem") // (main:3): ERROR [ENOET:2]: there was a problem
 ```
 
 
@@ -54,28 +56,28 @@ Prints an error message to `stderr` with info about `errno`, flushing `stdout` f
 void err_exit(const char *restrict fmt, ...);
 ```
 
-Prints an error message to `stderr` with info about `errno`, flushing `stdout` first.
+Prints an error message to `stderr` with info about `errno`, flushing `stdout` first.  
 Exits the program with `abort` if `LIBEH_DEBUG` is defined, or with `exit(EXIT_FAILURE)`
 
 ```c
 void err_exit_now(const char *restrict fmt, ...);
 ```
 
-Prints an error message to `stderr` with info about `errno`, without flushing `stdout`.
+Prints an error message to `stderr` with info about `errno`, without flushing `stdout`.  
 Exits the program with `abort` if `LIBEH_DEBUG` is defined, or with `_exit(EXIT_FAILURE)`
 
 ```c
 void err_exit_en(int errno_val, const char *restrict fmt, ...);
 ```
 
-Prints an error message to `stderr` with info about `errno_val`, flushing `stdout` first.
+Prints an error message to `stderr` with info about `errno_val`, flushing `stdout` first.  
 Exits the program with `abort` if `LIBEH_DEBUG` is defined, or with `exit(EXIT_FAILURE)`
 
 ```c
 void fatal(const char *restrict fmt, ...);
 ```
 
-Prints an error message to `stderr` without any info about `errno`, flushing `stdout` first.
+Prints an error message to `stderr` without any info about `errno`, flushing `stdout` first.  
 Exits the program with `abort` if `LIBEH_DEBUG` is defined, or with `exit(EXIT_FAILURE)`.
 
 
