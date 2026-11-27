@@ -29,6 +29,7 @@ Include the header to the project like:
 #include "ehandler.h"
 ```
 
+And add the `-leh` when compiling.  
 This makes the errors get printed like:
 ```c
 err_msg("there was a problem")  // ERROR [ENOENT:2]: there was a problem
